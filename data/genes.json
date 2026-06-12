@@ -1,0 +1,74 @@
+{
+  "HERC2": {
+    "trait": "Eye Color",
+    "category": "physical",
+    "variants": {
+      "GG": {"effect": "Brown Eyes", "confidence": 0.85, "risk": "none"},
+      "GA": {"effect": "Hazel or Green Eyes", "confidence": 0.70, "risk": "none"},
+      "AA": {"effect": "Blue Eyes", "confidence": 0.75, "risk": "none"}
+    }
+  },
+  "MC1R": {
+    "trait": "Hair Color",
+    "category": "physical",
+    "variants": {
+      "CC": {"effect": "Dark Hair", "confidence": 0.80, "risk": "none"},
+      "CT": {"effect": "Light Brown Hair", "confidence": 0.65, "risk": "none"},
+      "TT": {"effect": "Red or Blonde Hair", "confidence": 0.72, "risk": "none"}
+    }
+  },
+  "LCT": {
+    "trait": "Lactose Tolerance",
+    "category": "digestion",
+    "variants": {
+      "CC": {"effect": "Fully Tolerant", "confidence": 0.90, "risk": "low"},
+      "CT": {"effect": "Partially Tolerant", "confidence": 0.70, "risk": "medium"},
+      "TT": {"effect": "Lactose Intolerant", "confidence": 0.85, "risk": "high"}
+    }
+  },
+  "ACTN3": {
+    "trait": "Muscle Performance",
+    "category": "fitness",
+    "variants": {
+      "RR": {"effect": "Power Athlete Build", "confidence": 0.78, "risk": "none"},
+      "RX": {"effect": "Mixed Performance", "confidence": 0.65, "risk": "none"},
+      "XX": {"effect": "Endurance Athlete Build", "confidence": 0.72, "risk": "none"}
+    }
+  },
+  "FTO": {
+    "trait": "Obesity Risk",
+    "category": "health",
+    "variants": {
+      "TT": {"effect": "Lower Obesity Risk", "confidence": 0.75, "risk": "low"},
+      "AT": {"effect": "Moderate Obesity Risk", "confidence": 0.68, "risk": "medium"},
+      "AA": {"effect": "Higher Obesity Risk", "confidence": 0.72, "risk": "high"}
+    }
+  },
+  "APOE": {
+    "trait": "Alzheimer Risk",
+    "category": "health",
+    "variants": {
+      "e2": {"effect": "Reduced Risk", "confidence": 0.80, "risk": "low"},
+      "e3": {"effect": "Average Risk", "confidence": 0.75, "risk": "medium"},
+      "e4": {"effect": "Increased Risk", "confidence": 0.85, "risk": "high"}
+    }
+  },
+  "CYP1A2": {
+    "trait": "Caffeine Metabolism",
+    "category": "metabolism",
+    "variants": {
+      "AA": {"effect": "Fast Metabolizer", "confidence": 0.82, "risk": "low"},
+      "AC": {"effect": "Moderate Metabolizer", "confidence": 0.70, "risk": "low"},
+      "CC": {"effect": "Slow Metabolizer", "confidence": 0.78, "risk": "medium"}
+    }
+  },
+  "SLC6A4": {
+    "trait": "Stress Response",
+    "category": "mental",
+    "variants": {
+      "LL": {"effect": "Resilient to Stress", "confidence": 0.72, "risk": "low"},
+      "LS": {"effect": "Moderate Stress Sensitivity", "confidence": 0.65, "risk": "medium"},
+      "SS": {"effect": "High Stress Sensitivity", "confidence": 0.70, "risk": "high"}
+    }
+  }
+}

@@ -1,0 +1,218 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background: #0a0a1a;
+  color: #e0e0ff;
+  min-height: 100vh;
+}
+
+header {
+  text-align: center;
+  padding: 30px 20px 20px;
+  background: linear-gradient(135deg, #0d0d2b, #1a0a3d);
+  border-bottom: 1px solid #2a2a5a;
+}
+
+header .dna-icon { font-size: 2.5rem; margin-bottom: 8px; }
+header h1 { font-size: 2rem; color: #7ef0ff; letter-spacing: 1px; }
+header p  { color: #8888bb; margin-top: 6px; }
+
+main {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 20px;
+  padding: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.panel {
+  background: #10102a;
+  border: 1px solid #2a2a5a;
+  border-radius: 16px;
+  padding: 24px;
+}
+
+.panel h2 {
+  font-size: 1rem;
+  color: #7ef0ff;
+  margin-bottom: 16px;
+  letter-spacing: 1px;
+}
+
+/* Gene Cards */
+.gene-card {
+  background: #1a1a3a;
+  border: 1px solid #3a3a6a;
+  border-radius: 10px;
+  padding: 14px;
+  margin-bottom: 12px;
+  transition: border-color 0.2s;
+}
+
+.gene-card:hover { border-color: #7ef0ff; }
+
+.gene-card label {
+  display: block;
+  font-weight: 600;
+  color: #c0c0ff;
+  margin-bottom: 4px;
+}
+
+.gene-card .trait-tag {
+  font-size: 0.75rem;
+  color: #6666aa;
+  margin-bottom: 8px;
+}
+
+.gene-card select {
+  width: 100%;
+  background: #0a0a1a;
+  color: #e0e0ff;
+  border: 1px solid #3a3a6a;
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+/* Sliders */
+.slider-group label {
+  display: block;
+  font-size: 0.85rem;
+  color: #8888bb;
+  margin: 12px 0 4px;
+}
+
+.slider-group input[type=range] {
+  width: 100%;
+  accent-color: #7ef0ff;
+}
+
+/* Analyze Button */
+#analyze-btn {
+  width: 100%;
+  margin-top: 24px;
+  padding: 14px;
+  background: linear-gradient(135deg, #7ef0ff, #5050ff);
+  color: #000;
+  font-weight: 700;
+  font-size: 1rem;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+#analyze-btn:hover { opacity: 0.85; }
+
+/* DNA Helix */
+.dna-helix {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.strand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.base-pair {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  animation: float 3s ease-in-out infinite;
+}
+
+.base-pair:nth-child(odd)  { animation-delay: 0s; }
+.base-pair:nth-child(even) { animation-delay: 0.3s; }
+
+@keyframes float {
+  0%, 100% { transform: translateX(0); }
+  50%       { transform: translateX(6px); }
+}
+
+.base {
+  width: 28px;
+  height: 10px;
+  border-radius: 5px;
+}
+
+.base.left  { background: #7ef0ff; }
+.base.right { background: #ff6bff; }
+
+.bond {
+  width: 20px;
+  height: 2px;
+  background: #3a3a6a;
+}
+
+#dna-summary {
+  text-align: center;
+  color: #6666aa;
+  font-size: 0.85rem;
+  margin-top: 16px;
+}
+
+/* Results */
+.result-card {
+  background: #1a1a3a;
+  border-left: 4px solid #7ef0ff;
+  border-radius: 8px;
+  padding: 14px;
+  margin-bottom: 12px;
+}
+
+.result-card.risk-high   { border-left-color: #ff4444; }
+.result-card.risk-medium { border-left-color: #ffaa00; }
+.result-card.risk-low    { border-left-color: #44ff88; }
+
+.result-card h3 { font-size: 0.9rem; color: #c0c0ff; margin-bottom: 4px; }
+.result-card p  { font-size: 0.8rem; color: #7777aa; margin: 2px 0; }
+
+.confidence-bar {
+  background: #0a0a1a;
+  border-radius: 4px;
+  height: 6px;
+  margin-top: 8px;
+  overflow: hidden;
+}
+
+.confidence-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #5050ff, #7ef0ff);
+  border-radius: 4px;
+  transition: width 0.6s ease;
+}
+
+.risk-badge {
+  display: inline-block;
+  font-size: 0.7rem;
+  padding: 2px 8px;
+  border-radius: 20px;
+  margin-top: 6px;
+  font-weight: 600;
+}
+
+.badge-high   { background: #ff444430; color: #ff4444; }
+.badge-medium { background: #ffaa0030; color: #ffaa00; }
+.badge-low    { background: #44ff8830; color: #44ff88; }
+.badge-none   { background: #7ef0ff20; color: #7ef0ff; }
+
+.placeholder { color: #4a4a7a; font-size: 0.85rem; text-align: center; margin-top: 40px; }
+
+footer {
+  text-align: center;
+  padding: 20px;
+  color: #444466;
+  font-size: 0.8rem;
+  border-top: 1px solid #1a1a3a;
+}
+
+@media (max-width: 900px) {
+  main { grid-template-columns: 1fr; }
+}

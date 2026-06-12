@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Human Genome Simulator</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <header>
+    <div class="dna-icon">🧬</div>
+    <h1>Human Genome Simulator</h1>
+    <p>Modify genes and explore how they shape your traits and health</p>
+  </header>
+
+  <main>
+
+    <!-- LEFT: Gene Selector -->
+    <section class="panel" id="gene-panel">
+      <h2>🔬 Select Genes</h2>
+      <div id="gene-list">Loading genes...</div>
+
+      <h2 style="margin-top:30px">🌱 Environment</h2>
+      <div class="slider-group">
+        <label>Exercise Level <span id="exercise-val">5</span>/10</label>
+        <input type="range" min="1" max="10" value="5" id="exercise"
+               oninput="document.getElementById('exercise-val').textContent=this.value">
+
+        <label>Sleep Quality <span id="sleep-val">5</span>/10</label>
+        <input type="range" min="1" max="10" value="5" id="sleep"
+               oninput="document.getElementById('sleep-val').textContent=this.value">
+
+        <label>Stress Level <span id="stress-val">5</span>/10</label>
+        <input type="range" min="1" max="10" value="5" id="stress"
+               oninput="document.getElementById('stress-val').textContent=this.value">
+      </div>
+
+      <button id="analyze-btn" onclick="analyzeGenome()">
+        🧪 Analyze My Genome
+      </button>
+    </section>
+
+    <!-- MIDDLE: DNA Visual -->
+    <section class="panel" id="dna-panel">
+      <h2>🧬 DNA Model</h2>
+      <div class="dna-helix">
+        <div class="strand" id="strand"></div>
+      </div>
+      <div id="dna-summary">
+        <p>Select genes and click Analyze to see your DNA profile.</p>
+      </div>
+    </section>
+
+    <!-- RIGHT: Results -->
+    <section class="panel" id="results-panel">
+      <h2>📊 Results</h2>
+      <div id="results-output">
+        <p class="placeholder">Your trait predictions will appear here after analysis.</p>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <p>⚠️ For educational purposes only. Not medical advice.</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
