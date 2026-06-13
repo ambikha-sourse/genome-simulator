@@ -1,4 +1,4 @@
-const API = 'http://genome-simulator.onrender.com';
+const API = 'https://genome-simulator.onrender.com';
 let geneData = {};
 
 // Load genes on page load

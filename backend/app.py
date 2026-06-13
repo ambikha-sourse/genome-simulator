@@ -4,7 +4,7 @@ import json
 import os
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, orgins="*")
 
 # Load gene database
 data_path = os.path.join(os.path.dirname(__file__), '..', 'data', 'genes.json')
