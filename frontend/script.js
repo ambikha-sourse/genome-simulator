@@ -1,24 +1,21 @@
-const API = 'https://genome-simulator.onrender.com';
+const API = '';
 let geneData = {};
 
-// Load genes on page load
+// Initialize application
 window.onload = async () => {
   buildDNAHelix();
-  try {
-    const res = await fetch(`${API}/genes`);
-    geneData = await res.json();
-    renderGeneCards();
-  } catch (e) {
-    document.getElementById('gene-list').innerHTML =
-      '<p style="color:#ff4444">Could not connect to backend. Make sure Flask is running.</p>';
-  }
+  await loadGenes();
 };
 
 function buildDNAHelix() {
   const strand = document.getElementById('strand');
-  for (let i = 0; i < 18; i++) {
+  strand.innerHTML = ''; // clear any existing
+  // Build 14 base pairs to fit the panel without overflowing
+  for (let i = 0; i < 14; i++) {
+    // Staggered animation delay
+    const delay = -(i * 0.4);
     strand.innerHTML += `
-      <div class="base-pair">
+      <div class="base-pair" style="animation-delay: ${delay}s">
         <div class="base left"></div>
         <div class="bond"></div>
         <div class="base right"></div>
@@ -26,27 +23,89 @@ function buildDNAHelix() {
   }
 }
 
+async function loadGenes() {
+  const container = document.getElementById('gene-list');
+  try {
+    const res = await fetch(`${API}/genes`);
+    if (!res.ok) throw new Error('Network response was not ok');
+    geneData = await res.json();
+    renderGeneCards();
+  } catch (e) {
+    container.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon">🔌</div>
+        <p style="color:var(--risk-high)">Backend Connection Failed.</p>
+        <p style="font-size:0.85rem;margin-top:8px">Please ensure the Flask API is running on localhost:5000.</p>
+      </div>`;
+    document.getElementById('analyze-btn').disabled = true;
+  }
+}
+
 function renderGeneCards() {
   const container = document.getElementById('gene-list');
   container.innerHTML = '';
-  for (const [gene, info] of Object.entries(geneData)) {
+  
+  // Sort genes alphabetically for consistent UI
+  const genes = Object.keys(geneData).sort();
+  
+  genes.forEach((gene, index) => {
+    const info = geneData[gene];
     const variants = Object.keys(info.variants);
     const options = variants.map(v =>
       `<option value="${v}">${v} — ${info.variants[v].effect}</option>`
     ).join('');
+    
+    // Staggered entry animation
+    const delay = index * 0.05;
+    
     container.innerHTML += `
-      <div class="gene-card">
-        <label>${gene}</label>
-        <div class="trait-tag">📌 ${info.trait} · ${info.category}</div>
+      <div class="gene-card" style="animation: slideIn 0.4s ease forwards; animation-delay: ${delay}s; opacity: 0;">
+        <label for="gene-${gene}">${gene}</label>
+        <div class="trait-tag">
+          ${getCategoryIcon(info.category)} ${info.trait}
+        </div>
         <select id="gene-${gene}">${options}</select>
       </div>`;
-  }
+  });
+}
+
+function getCategoryIcon(category) {
+  const icons = {
+    physical: '👁️',
+    digestion: '🥛',
+    fitness: '🏃',
+    health: '❤️',
+    metabolism: '⚡',
+    mental: '🧠'
+  };
+  return icons[category] || '🧬';
+}
+
+function getRiskBadge(risk) {
+  const badges = {
+    none:   '<span class="risk-badge badge-none">✅ No Risk</span>',
+    low:    '<span class="risk-badge badge-low">🟢 Low Risk</span>',
+    medium: '<span class="risk-badge badge-medium">🟡 Moderate Risk</span>',
+    high:   '<span class="risk-badge badge-high">🔴 High Risk</span>'
+  };
+  return badges[risk] || badges.none;
 }
 
 async function analyzeGenome() {
   const btn = document.getElementById('analyze-btn');
-  btn.textContent = '⏳ Analyzing...';
+  const summary = document.getElementById('dna-summary');
+  const seeAnalysisBtn = document.getElementById('see-analysis-btn');
+  
+  // UI Loading State
+  btn.innerHTML = '<div class="spinner" style="width:20px;height:20px;border-width:2px;margin:0"></div> Analyzing...';
   btn.disabled = true;
+  seeAnalysisBtn.style.display = 'none';
+  
+  summary.innerHTML = `
+    <div class="loading-state">
+      <div class="spinner"></div>
+      <p>Sequencing DNA and applying modifiers...</p>
+    </div>`;
 
   const genes = {};
   for (const gene of Object.keys(geneData)) {
@@ -61,52 +120,115 @@ async function analyzeGenome() {
   };
 
   try {
+    // Artificial delay to show the nice loading animation
+    await new Promise(r => setTimeout(r, 800));
+    
     const res = await fetch(`${API}/predict`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ genes, environment })
     });
+    
+    if (!res.ok) throw new Error('API Error');
     const data = await res.json();
     renderResults(data);
+    
   } catch (e) {
-    document.getElementById('results-output').innerHTML =
-      '<p style="color:#ff4444">Analysis failed. Check Flask backend.</p>';
+    summary.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon">❌</div>
+        <p style="color:var(--risk-high)">Analysis failed.</p>
+        <p style="font-size:0.85rem;margin-top:8px">Check if backend is running.</p>
+      </div>`;
   }
 
-  btn.textContent = '🧪 Analyze My Genome';
+  // Restore button
+  btn.innerHTML = '<span class="btn-icon">🧪</span> Analyze My Genome';
   btn.disabled = false;
 }
 
 function renderResults(data) {
   const output = document.getElementById('results-output');
   const summary = document.getElementById('dna-summary');
+  const seeAnalysisBtn = document.getElementById('see-analysis-btn');
 
   const high   = data.health_risks.filter(r => r.risk === 'high').length;
   const medium = data.health_risks.filter(r => r.risk === 'medium').length;
+  const total = data.total_genes_analyzed;
 
   summary.innerHTML = `
-    <p style="color:#7ef0ff;font-size:1rem;font-weight:600">
-      ${data.total_genes_analyzed} Genes Analyzed
-    </p>
-    <p style="margin-top:6px">
-      🔴 ${high} High Risk &nbsp; 🟡 ${medium} Medium Risk
-    </p>`;
+    <h3 style="color:var(--accent-cyan); font-family:var(--font-heading); margin-bottom:8px">
+      Analysis Complete
+    </h3>
+    <p style="color:#fff; margin-bottom:8px">${total} Traits Analyzed</p>
+    <div style="display:flex; justify-content:center; gap:12px">
+      <span class="val-badge" style="background:rgba(255,51,102,0.2); color:var(--risk-high)">${high} High Risk</span>
+      <span class="val-badge" style="background:rgba(255,170,0,0.2); color:var(--risk-med)">${medium} Med Risk</span>
+    </div>`;
 
-  output.innerHTML = data.predictions.map(p => `
-    <div class="result-card risk-${p.risk}">
-      <h3>${p.trait} — ${p.gene}</h3>
-      <p>Variant: <strong>${p.variant}</strong></p>
-      <p>${p.effect}</p>
-      <span class="risk-badge badge-${p.risk}">
-        ${p.risk === 'none' ? '✅ No Risk' :
-          p.risk === 'low'  ? '🟢 Low Risk' :
-          p.risk === 'medium' ? '🟡 Medium Risk' : '🔴 High Risk'}
-      </span>
-      <div class="confidence-bar">
-        <div class="confidence-fill" style="width:${p.confidence}%"></div>
-      </div>
-      <p style="font-size:0.75rem;margin-top:4px;color:#5555aa">
-        Confidence: ${p.confidence}%
-      </p>
-    </div>`).join('');
+  seeAnalysisBtn.style.display = 'block';
+
+  output.innerHTML = '';
+  
+  // Sort results: High risk first, then medium, then low/none
+  const riskWeight = { high: 3, medium: 2, low: 1, none: 0 };
+  const sortedPredictions = data.predictions.sort((a, b) => riskWeight[b.risk] - riskWeight[a.risk]);
+
+  sortedPredictions.forEach((p, index) => {
+    // Delay animation for each card
+    const delay = index * 0.1;
+    
+    output.innerHTML += `
+      <div class="result-card" style="border-top: 4px solid var(--risk-${p.risk === 'none' ? 'low' : p.risk === 'medium' ? 'med' : p.risk}); animation-delay: ${delay}s">
+        
+        <div class="result-header">
+          <div>
+            <h3 class="result-title">${p.trait}</h3>
+            <span class="result-gene">${p.gene} [${p.variant}]</span>
+          </div>
+          ${getRiskBadge(p.risk)}
+        </div>
+        
+        <p class="result-effect">${p.effect}</p>
+        
+        <div class="confidence-wrapper">
+          <div class="confidence-header">
+            <span>Prediction Confidence</span>
+            <span>${p.confidence}%</span>
+          </div>
+          <div class="confidence-bar">
+            <!-- Inline style for width, but we trigger it after DOM insert for animation -->
+            <div class="confidence-fill" style="width: ${p.confidence}%"></div>
+          </div>
+        </div>
+      </div>`;
+  });
+}
+
+function openGeneModal() {
+  const modal = document.getElementById('gene-modal');
+  if (modal) {
+    modal.classList.remove('hidden');
+  }
+}
+
+function closeGeneModal() {
+  const modal = document.getElementById('gene-modal');
+  if (modal) {
+    modal.classList.add('hidden');
+  }
+}
+
+function openResultsModal() {
+  const modal = document.getElementById('results-modal');
+  if (modal) {
+    modal.classList.remove('hidden');
+  }
+}
+
+function closeResultsModal() {
+  const modal = document.getElementById('results-modal');
+  if (modal) {
+    modal.classList.add('hidden');
+  }
 }
