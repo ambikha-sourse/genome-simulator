@@ -8,7 +8,7 @@ app = Flask(__name__, static_folder='../frontend', static_url_path='/')
 CORS(app, resources={r"/*": {"origins": "*"}})
 
 # Load gene database with error handling
-DATA_PATH = os.path.join(os.path.dirname(__file__), '..', 'data', 'genes.json')
+DATA_PATH = os.path.join(os.path.dirname(__file__), 'data', 'genes.json')
 try:
     with open(DATA_PATH, 'r') as f:
         GENE_DATA = json.load(f)
