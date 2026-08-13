@@ -4,68 +4,129 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Human Genome Simulator</title>
+  
+  <!-- Modern Fonts: Outfit for Headings, Inter for Body -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;700;800&display=swap" rel="stylesheet">
+  
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-  <header>
+  <div class="app-background">
+    <div class="glow-orb orb-1"></div>
+    <div class="glow-orb orb-2"></div>
+  </div>
+
+  <header class="glass-header">
     <div class="dna-icon">🧬</div>
-    <h1>Human Genome Simulator</h1>
-    <p>Modify genes and explore how they shape your traits and health</p>
+    <div class="header-text">
+      <h1>Human Genome Simulator</h1>
+      <p>Modify genes and explore how they shape your traits and health</p>
+    </div>
   </header>
 
-  <main>
-
+  <main class="app-container">
+    
     <!-- LEFT: Gene Selector -->
-    <section class="panel" id="gene-panel">
-      <h2>🔬 Select Genes</h2>
-      <div id="gene-list">Loading genes...</div>
-
-      <h2 style="margin-top:30px">🌱 Environment</h2>
-      <div class="slider-group">
-        <label>Exercise Level <span id="exercise-val">5</span>/10</label>
-        <input type="range" min="1" max="10" value="5" id="exercise"
-               oninput="document.getElementById('exercise-val').textContent=this.value">
-
-        <label>Sleep Quality <span id="sleep-val">5</span>/10</label>
-        <input type="range" min="1" max="10" value="5" id="sleep"
-               oninput="document.getElementById('sleep-val').textContent=this.value">
-
-        <label>Stress Level <span id="stress-val">5</span>/10</label>
-        <input type="range" min="1" max="10" value="5" id="stress"
-               oninput="document.getElementById('stress-val').textContent=this.value">
+    <section class="panel glass-panel" id="gene-panel" aria-label="Gene Selection">
+      <div class="panel-header">
+        <h2>🔬 Genetic Makeup</h2>
+        <p class="panel-subtitle">Select your genetic variants</p>
+        <button id="open-genes-btn" class="secondary-btn" onclick="openGeneModal()" style="margin-top: 16px;">Select Genetic Variants</button>
       </div>
 
-      <button id="analyze-btn" onclick="analyzeGenome()">
-        🧪 Analyze My Genome
+      <div class="panel-header" style="margin-top:16px">
+        <h2>🌱 Lifestyle Modifiers</h2>
+        <p class="panel-subtitle">Environment affects gene expression</p>
+      </div>
+      <div class="slider-group">
+        <div class="slider-item">
+          <label for="exercise">Exercise Level <span class="val-badge" id="exercise-val">5</span></label>
+          <input type="range" min="1" max="10" value="5" id="exercise" oninput="document.getElementById('exercise-val').textContent=this.value">
+        </div>
+
+        <div class="slider-item">
+          <label for="sleep">Sleep Quality <span class="val-badge" id="sleep-val">5</span></label>
+          <input type="range" min="1" max="10" value="5" id="sleep" oninput="document.getElementById('sleep-val').textContent=this.value">
+        </div>
+
+        <div class="slider-item">
+          <label for="stress">Stress Level <span class="val-badge" id="stress-val">5</span></label>
+          <input type="range" min="1" max="10" value="5" id="stress" oninput="document.getElementById('stress-val').textContent=this.value">
+        </div>
+      </div>
+
+      <button id="analyze-btn" class="primary-btn pulse-anim" onclick="analyzeGenome()" style="margin-top: auto;">
+        <span class="btn-icon">🧪</span> Analyze My Genome
       </button>
     </section>
 
     <!-- MIDDLE: DNA Visual -->
-    <section class="panel" id="dna-panel">
-      <h2>🧬 DNA Model</h2>
-      <div class="dna-helix">
-        <div class="strand" id="strand"></div>
+    <section class="panel glass-panel" id="dna-panel" aria-label="DNA Visualization" style="overflow: hidden;">
+      <div class="panel-header text-center">
+        <h2>🧬 DNA Helix Model</h2>
       </div>
-      <div id="dna-summary">
-        <p>Select genes and click Analyze to see your DNA profile.</p>
+      <div class="dna-helix-container" style="flex: 1; display: flex; align-items: center; justify-content: center;">
+        <div class="strand" id="strand"></div>
       </div>
     </section>
 
     <!-- RIGHT: Results -->
-    <section class="panel" id="results-panel">
-      <h2>📊 Results</h2>
-      <div id="results-output">
-        <p class="placeholder">Your trait predictions will appear here after analysis.</p>
+    <section class="panel glass-panel" id="results-panel" aria-label="Analysis Results" style="display: flex; flex-direction: column;">
+      <div class="panel-header">
+        <h2>📊 Phenotype Predictions</h2>
+        <p class="panel-subtitle">Your predicted traits and health risks</p>
+      </div>
+      
+      <div style="flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+        <div id="dna-summary" class="glass-summary" style="margin-top: 0; margin-bottom: 20px; width: 100%;">
+          <p>Awaiting analysis... Please configure your genome on the left.</p>
+        </div>
+        
+        <button id="see-analysis-btn" class="primary-btn" onclick="openResultsModal()" style="display: none; width: 100%;">
+          See complete analysis
+        </button>
       </div>
     </section>
 
   </main>
 
+  <!-- Gene Selection Modal -->
+  <div id="gene-modal" class="modal-overlay hidden">
+    <div class="modal-content glass-panel">
+      <div class="modal-header">
+        <h2 style="font-family: var(--font-heading); color: var(--accent-cyan); font-size: 1.25rem;">🔬 Select Genetic Variants</h2>
+        <button class="close-btn" onclick="closeGeneModal()">✕</button>
+      </div>
+      <div id="gene-list" class="scrollable-content">
+        <div class="loading-state">
+          <div class="spinner"></div>
+          <p>Sequencing DNA...</p>
+        </div>
+      </div>
+      <button class="primary-btn" onclick="closeGeneModal()" style="margin-top: 20px;">Confirm Selections</button>
+    </div>
+  </div>
+
+  <!-- Results Modal -->
+  <div id="results-modal" class="modal-overlay hidden">
+    <div class="modal-content glass-panel">
+      <div class="modal-header">
+        <h2 style="font-family: var(--font-heading); color: var(--accent-cyan); font-size: 1.25rem;">📊 Complete Analysis</h2>
+        <button class="close-btn" onclick="closeResultsModal()">✕</button>
+      </div>
+      <div id="results-output" class="scrollable-content">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+  </div>
+
   <footer>
-    <p>⚠️ For educational purposes only. Not medical advice.</p>
+    <p>⚠️ For educational purposes only. Not intended as medical advice.</p>
   </footer>
 
-  <script src="script.js"></script>
+  <script src="script.js" defer></script>
 </body>
 </html>
